@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% from "macros.html" import render_pagination %}
+
+{%block title %}Home{% endblock %}
+
+{%block body %}
+<div class="row">
+  {% for course in pagination.items %}
+  <div class="col-sm-6 col-md-4 course">
+    <div class="thumbnail">
+      <a href="{{ course.url }}" target="_blank">
+        <img src="{{ course.image_url }}" alt="??">
+        <div class="caption">
+            <h4 class="course_name">{{ course.name }}</h4>
+            <p class="course_description">{{ course.description }}</p>
+        </div>
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{{ render_pagination(pagination, 'front.index') }}
+{% endblock %}
+
+{% macro render_pagination(pagination, haha) %}
+  <nav class='nav-pagination' aria-label='Page navigation'>
+    <ul class='pagination'>
+      <li {% if not pagination.has_prev %}class='disabled'{% endif %}>
+        <a href="{{ url_for(haha, page=pagination.prev_num) if pagination.has_prev else '#' }}">&laquo;</a>
+      </li>
+      {% for page in pagination.iter_pages() %}
+        {% if page %}
+          {% if page != pagination.page %}
+            <li><a href="{{ url_for(haha, page=page) }}">{{ page }}</a></li>
+          {% else %}
+            <li class='active'><a href='#'>{{ page }}<span class='sr-only'>(current)</span></a></li>
+          {% endif %}
+        {% else %}
+          <li><span class='ellipsis'>...</span></li>
+        {% endif %}
+      {% endfor %}
+      <li {% if not pagination.has_next %}class='disabled'{% endif %}>
+        <a href="{{ url_for(haha, page=pagination.next_num) if pagination.has_next else '#' }}">&raquo;</a>
+      </li>
+    </ul>
+  </nav>
+{% endmacro %}
